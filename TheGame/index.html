@@ -8,29 +8,45 @@
 </head>
 <body>
 
-<!-- Tela de Introdução -->
-<div id="intro">
-  <img src="imagens/logo.png" alt="Logo" id="intro-logo">
+<!-- ⚠️ Tela LGPD -->
+<div id="lgpd-box">
+  <div id="lgpd-content">
+    <h2>Aviso de Privacidade</h2>
+    <p>Este jogo coleta dados de progresso para melhorar sua experiência. Ao continuar, você concorda com nossa política de privacidade e com a LGPD.</p>
+    <button onclick="acceptLGPD()">Aceito</button>
+  </div>
+</div>
+
+<!-- 🎬 Tela de introdução -->
+<div id="intro" class="hidden">
+  <img src="imagens/logo.png" id="intro-logo">
   <p id="press-start">Aperte espaço para iniciar</p>
 </div>
 
-<!-- Tela de Fade -->
+<!-- 🔳 Tela de fade -->
 <div id="fade-screen" class="fade-screen"></div>
 
-<!-- Jogo -->
+<!-- 🎮 Jogo -->
 <div id="game">
   <div id="background" class="background"></div>
   <div id="character" class="character"></div>
   <div id="dialog-text"></div>
 </div>
 
-<!-- Escolha de Personagem -->
+<!-- 👥 Escolha de personagem -->
 <div id="choice-box" class="hidden">
-  <h2>Escolha seu personagem</h2>
-  <button onclick="chooseCharacter('Carlos')">Carlos</button>
-  <button onclick="chooseCharacter('Diego')">Diego</button>
-  <button onclick="chooseCharacter('Daniel')">Daniel</button>
-  <button onclick="chooseCharacter('Melissa')">Melissa</button>
+  <div class="char-display">
+    <img id="char-image" src="imagens/carlos.png">
+  </div>
+  <div class="char-info">
+    <h2 id="char-name">Carlos</h2>
+    <p id="char-desc">Habilidade e trajetória...</p>
+  </div>
+  <div class="controls">
+    <button onclick="prevCharacter()">◀</button>
+    <button onclick="nextCharacter()">▶</button>
+    <button onclick="confirmCharacter()">OK</button>
+  </div>
 </div>
 
 <script src="script.js"></script>
