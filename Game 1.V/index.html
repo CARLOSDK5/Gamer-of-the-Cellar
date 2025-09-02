@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cellar</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Botão de tradução -->
+<button id="button-translate">English</button>
+
+<!-- ⚠️ Tela LGPD -->
+<div id="lgpd-box">
+  <div id="lgpd-content">
+    <h2>Aviso de Privacidade</h2>
+    <p>Este jogo coleta dados de progresso para melhorar sua experiência. Ao continuar, você concorda com nossa política de privacidade e com a LGPD.</p>
+    <button onclick="acceptLGPD()">Aceito</button>
+  </div>
+</div>
+
+<!--  Tela de introdução -->
+<div id="intro" class="hidden">
+  <img src="imagens/logo.png" id="intro-logo">
+  <p id="press-start">Aperte espaço para iniciar</p>
+</div>
+
+<!-- 🔳 Tela de fade -->
+<div id="fade-screen" class="fade-screen"></div>
+
+<!-- 🎮 Jogo -->
+<div id="game">
+  <div id="background" class="background"></div>
+  <div id="character" class="character"></div>
+  <div id="dialog-text"></div>
+</div>
+
+<!-- 👥 Escolha de personagem -->
+<div id="choice-box" class="hidden">
+  <div class="char-display">
+    <img id="char-image" src="imagens/carlos.png">
+  </div>
+  <div class="char-info">
+    <h2 id="char-name">Carlos</h2>
+    <p id="char-desc">
+      Habilidade: Enfrenta o perigo de frente, corre riscos, ótimo em combates.
+
+      Trajetória: Tentará mover as pedras para libertar o grupo, enfrentando desafios físicos.
+    </p>
+  </div>
+  <div class="controls">
+    <button onclick="prevCharacter()">◀</button>
+    <button onclick="nextCharacter()">▶</button>
+    <button onclick="confirmCharacter()">OK</button>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="translate.js"></script>
+<script src="script.js"></script>
+<script src="Carlos.js"></script>
+<script src="Carlos.html"></script>
+
+</body>
+</html>

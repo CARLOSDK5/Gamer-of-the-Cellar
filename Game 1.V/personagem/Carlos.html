@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cellar - Carlos</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: black;
+  overflow: hidden;
+  font-family: 'Courier New', monospace;
+}
+
+/* 🎮 Jogo */
+#game {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: block;
+}
+
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  background-size: cover;
+  background-position: center;
+  transition: opacity 1s;
+}
+
+.character {
+  position: absolute;
+  bottom: 0;
+  width: 300px;
+  height: 400px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+#dialog-text {
+  position: absolute;
+  bottom: 12%;
+  left: 5%;
+  right: 5%;
+  color: white;
+  font-size: 24px;
+  max-width: 90%;
+  transition: opacity 1s;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 15px;
+  border-radius: 8px;
+  line-height: 1.4;
+}
+
+/* Escolhas */
+#choice-box {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  padding: 20px;
+  border: 2px solid white;
+  border-radius: 10px;
+  z-index: 1000;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#choice-box button {
+  padding: 10px 20px;
+  background: #333;
+  color: white;
+  border: 1px solid white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+#choice-box button:hover {
+  background: #555;
+}
+
+/* Instruções */
+.instructions {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  color: white;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<!-- Instruções -->
+<div id="instructions" class="ins">
+  <p id="press-Cont">Pressione ESPAÇO ou ENTER para continuar</p>
+</div>
+
+<!-- 🎮 Jogo -->
+<div id="game">
+  <div id="background" class="background"></div>
+  <div id="character" class="character"></div>
+  <div id="dialog-text"></div>
+</div>
+
+<div id="choice-box"></div>
+
+<!-- Scripts -->
+<script>
+// Diálogos iniciais antes da escolha
+const dialogsCarlos = [
+  { text: "Carlos desperta tossindo, sentindo o peso da queda. O ar é pesado e cheira a mofo.", img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" },
+  { text: "Carlos: Ai... O que foi isso?!", img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" },
+  { text: "Carlos: Olá?! Tem alguém aí? Amanda? Daniel? Torrêncio?!", img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" },
+  { text: "Carlos: Droga... onde é que eu vim parar...?", img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" },
+  { text: "Diante dele há uma porta antiga de madeira, parcialmente apodrecida pelo tempo.", img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" },
+  { text: "E, do outro lado, uma grade caída que revela um corredor escuro e úmido.", img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" },
+  { text: "O coração de Carlos acelera, a sensação de estar sendo observado o corrói.", img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" },
+  { text: "O que Carlos deve fazer?", img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" }
+];
+
+let dialogIndexCarlos = 0;
+let typingIndexCarlos = 0;
+let typingSpeedCarlos = 30;
+let typingIntervalCarlos;
+let isTypingCarlos = false;
+let currentBackgroundCarlos = "";
+
+window.onload = () => {
+  document.addEventListener("keydown", handleDialogSpaceCarlos);
+  document.addEventListener("click", handleDialogClickCarlos);
+  nextDialogCarlos();
+};
+
+function handleDialogSpaceCarlos(event) {
+  if (event.code === "Space" || event.code === "Enter") {
+    event.preventDefault();
+    nextDialogCarlos();
+  }
+}
+
+function handleDialogClickCarlos() {
+  nextDialogCarlos();
+}
+
+function nextDialogCarlos() {
+  const dialogElement = document.getElementById("dialog-text");
+
+  if (isTypingCarlos) {
+    clearInterval(typingIntervalCarlos);
+    dialogElement.innerHTML = dialogsCarlos[dialogIndexCarlos - 1].text;
+    isTypingCarlos = false;
+    return;
+  }
+
+  if (dialogIndexCarlos >= dialogsCarlos.length) {
+    document.removeEventListener("keydown", handleDialogSpaceCarlos);
+    document.removeEventListener("click", handleDialogClickCarlos);
+    showChoiceCarlos();
+    return;
+  }
+
+  const dialog = dialogsCarlos[dialogIndexCarlos];
+  showBackgroundCarlos(dialog.img);
+  showCharacterCarlos(dialog.char, dialog.charPos);
+  typeTextCarlos(dialog.text);
+  dialogIndexCarlos++;
+}
+
+function typeTextCarlos(text) {
+  clearInterval(typingIntervalCarlos);
+  typingIndexCarlos = 0;
+  const dialogElement = document.getElementById("dialog-text");
+  dialogElement.innerHTML = "";
+  isTypingCarlos = true;
+
+  typingIntervalCarlos = setInterval(() => {
+    dialogElement.innerHTML += text.charAt(typingIndexCarlos);
+    typingIndexCarlos++;
+    if (typingIndexCarlos >= text.length) {
+      clearInterval(typingIntervalCarlos);
+      isTypingCarlos = false;
+    }
+  }, typingSpeedCarlos);
+}
+
+function showBackgroundCarlos(image) {
+  const bg = document.getElementById("background");
+  if (image && image !== currentBackgroundCarlos) {
+    currentBackgroundCarlos = image;
+    bg.style.opacity = 0;
+    setTimeout(() => {
+      bg.style.backgroundImage = `url('${image}')`;
+      bg.style.opacity = 1;
+    }, 500);
+  }
+}
+
+function showCharacterCarlos(image, position) {
+  const char = document.getElementById("character");
+  if (image) {
+    char.style.opacity = 0;
+    setTimeout(() => {
+      char.style.backgroundImage = `url('${image}')`;
+      char.style.opacity = 1;
+      if (position === "left") {
+        char.style.left = "5%";
+        char.style.right = "auto";
+        char.style.transform = "none";
+      } else if (position === "right") {
+        char.style.left = "auto";
+        char.style.right = "5%";
+        char.style.transform = "none";
+      } else {
+        char.style.left = "50%";
+        char.style.right = "auto";
+        char.style.transform = "translateX(-50%)";
+      }
+    }, 500);
+  } else {
+    char.style.opacity = 0;
+  }
+}
+
+/* ---------------- ESCOLHAS ---------------- */
+
+function showChoiceCarlos() {
+  const choiceBox = document.getElementById("choice-box");
+  choiceBox.innerHTML = `
+    <button onclick="choosePorta()">➤ Entrar pela porta antiga</button>
+    <button onclick="chooseGrade()">➤ Seguir pela grade caída</button>
+  `;
+  choiceBox.style.display = "flex";
+}
+
+/* Opção A – Porta Antiga */
+function choosePorta() {
+  document.getElementById("choice-box").style.display = "none"; 
+  const portaDialogs = [
+    { text: "Carlos empurra a porta antiga com o ombro e entra num velho almoxarifado.", img: "../imagens/almoxarifado.png", char: "../imagens/carlos.png", charPos: "left" },
+    { text: "Prateleiras quebradas, caixas de papel mofado e cartazes rasgados cobrem o chão.", img: "../imagens/almoxarifado.png", char: "../imagens/carlos.png", charPos: "left" },
+    { text: "Carlos: Mas o que é isso...?", img: "../imagens/almoxarifado.png", char: "../imagens/carlos.png", charPos: "left" },
+    { img: "../imagens/teatro.png", char: "../imagens/carlos.png", charPos: "left" },
+    { text: "De repente, um rangido ecoa. Carlos rapidamente sai da sala e volta para o corredor.", img: "../imagens/almoxarifado.png", char: "../imagens/carlos.png", charPos: "left" },
+    { img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" },
+    { text: "Ele decide seguir pela grade caída.", img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" },
+    { text: "Um corredor úmido e fétido se abre diante dele, com água pingando das paredes.", img: "../imagens/corredor.png", char: "../imagens/carlos.png", charPos: "left" },
+    { text: "Passos distantes ecoam por alguns segundos... mas logo desaparecem.", img: "../imagens/corredor.png", char: "../imagens/carlos.png", charPos: "left" },
+    { text: "Carlos: Mas o que tá acontecendo aqui... preciso achar alguém.", img: "../imagens/corredor.png", char: "../imagens/carlos.png", charPos: "left" }
+
+  ];
+
+  playSubDialogs(portaDialogs);
+}
+
+/* Opção B – Grade Caída */
+function chooseGrade() {
+  document.getElementById("choice-box").style.display = "none"; 
+  const gradeDialogs = [
+    { text: "Carlos se abaixa e passa por baixo da grade torta.", img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" },
+    { text: "Um corredor úmido e fétido se abre diante dele, com água pingando das paredes.", img: "../imagens/corredor.png", char: "../imagens/carlos.png", charPos: "left" },
+    { text: "Passos distantes ecoam por alguns segundos... mas logo desaparecem.", img: "../imagens/corredor.png", char: "../imagens/carlos.png", charPos: "left" },
+    { text: "Carlos: Mas o que tá acontecendo aqui... preciso achar alguém.", img: "../imagens/corredor.png", char: "../imagens/carlos.png", charPos: "left" }
+  ];
+
+ playSubDialogs(gradeDialogs);
+}
+
+/* Reutiliza o sistema de diálogos para as escolhas */
+function playSubDialogs(dialogs) {
+  let i = 0;
+
+  function next() {
+    if (i >= dialogs.length) {
+      alert("Fim da Fase 1 do Carlos!");
+      return;
+    }
+    const d = dialogs[i];
+    showBackgroundCarlos(d.img);
+    showCharacterCarlos(d.char, d.charPos);
+    typeTextCarlos(d.text);
+    i++;
+  }
+
+  document.addEventListener("keydown", function handler(event) {
+    if (event.code === "Space" || event.code === "Enter") {
+      event.preventDefault();
+      next();
+    }
+  });
+
+  next();
+}
+
+
+function showBackgroundCarlos(image) {
+  const bg = document.getElementById("background");
+  if (image && image !== currentBackgroundCarlos) {
+    currentBackgroundCarlos = image;
+    bg.style.opacity = 0;
+    setTimeout(() => {
+      bg.style.backgroundImage = `url('${image}')`;
+      bg.style.opacity = 1;
+    }, 500);
+  }
+}
+
+let currentCharacterCarlos = "";
+
+function showCharacterCarlos(image, position) {
+  const char = document.getElementById("character");
+
+  if (image && image !== currentCharacterCarlos) {
+    currentCharacterCarlos = image;
+    char.style.opacity = 0;
+    setTimeout(() => {
+      char.style.backgroundImage = `url('${image}')`;
+      char.style.opacity = 1;
+      if (position === "left") {
+        char.style.left = "5%";
+        char.style.right = "auto";
+        char.style.transform = "none";
+      } else if (position === "right") {
+        char.style.left = "auto";
+        char.style.right = "5%";
+        char.style.transform = "none";
+      } else {
+        char.style.left = "50%";
+        char.style.right = "auto";
+        char.style.transform = "translateX(-50%)";
+      }
+    }, 500);
+  }
+}
+
+</script>
+
+</body>
+</html>
