@@ -213,13 +213,27 @@ function showBackgroundCarlos(image) {
   }
 }
 
+/* ✅ Função unificada: personagem aparece só se existir `char` */
+let currentCharacterCarlos = "";
+
 function showCharacterCarlos(image, position) {
   const char = document.getElementById("character");
-  if (image) {
+
+  if (!image) {
+    // Se não veio personagem, esconde
+    currentCharacterCarlos = "";
+    char.style.opacity = 0;
+    char.style.backgroundImage = "";
+    return;
+  }
+
+  if (image !== currentCharacterCarlos) {
+    currentCharacterCarlos = image;
     char.style.opacity = 0;
     setTimeout(() => {
       char.style.backgroundImage = `url('${image}')`;
       char.style.opacity = 1;
+
       if (position === "left") {
         char.style.left = "5%";
         char.style.right = "auto";
@@ -234,8 +248,6 @@ function showCharacterCarlos(image, position) {
         char.style.transform = "translateX(-50%)";
       }
     }, 500);
-  } else {
-    char.style.opacity = 0;
   }
 }
 
@@ -257,14 +269,13 @@ function choosePorta() {
     { text: "Carlos empurra a porta antiga com o ombro e entra num velho almoxarifado.", img: "../imagens/almoxarifado.png", char: "../imagens/carlos.png", charPos: "left" },
     { text: "Prateleiras quebradas, caixas de papel mofado e cartazes rasgados cobrem o chão.", img: "../imagens/almoxarifado.png", char: "../imagens/carlos.png", charPos: "left" },
     { text: "Carlos: Mas o que é isso...?", img: "../imagens/almoxarifado.png", char: "../imagens/carlos.png", charPos: "left" },
-    { img: "../imagens/teatro.png", char: "../imagens/carlos.png", charPos: "left" },
+    { img: "../imagens/cartazdesaparecido.png" },
     { text: "De repente, um rangido ecoa. Carlos rapidamente sai da sala e volta para o corredor.", img: "../imagens/almoxarifado.png", char: "../imagens/carlos.png", charPos: "left" },
-    { img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" },
+    { img: "../imagens/salacarlos.png" },
     { text: "Ele decide seguir pela grade caída.", img: "../imagens/salacarlos.png", char: "../imagens/carlos.png", charPos: "left" },
     { text: "Um corredor úmido e fétido se abre diante dele, com água pingando das paredes.", img: "../imagens/corredor.png", char: "../imagens/carlos.png", charPos: "left" },
     { text: "Passos distantes ecoam por alguns segundos... mas logo desaparecem.", img: "../imagens/corredor.png", char: "../imagens/carlos.png", charPos: "left" },
     { text: "Carlos: Mas o que tá acontecendo aqui... preciso achar alguém.", img: "../imagens/corredor.png", char: "../imagens/carlos.png", charPos: "left" }
-
   ];
 
   playSubDialogs(portaDialogs);
@@ -307,47 +318,6 @@ function playSubDialogs(dialogs) {
   });
 
   next();
-}
-
-
-function showBackgroundCarlos(image) {
-  const bg = document.getElementById("background");
-  if (image && image !== currentBackgroundCarlos) {
-    currentBackgroundCarlos = image;
-    bg.style.opacity = 0;
-    setTimeout(() => {
-      bg.style.backgroundImage = `url('${image}')`;
-      bg.style.opacity = 1;
-    }, 500);
-  }
-}
-
-let currentCharacterCarlos = "";
-
-function showCharacterCarlos(image, position) {
-  const char = document.getElementById("character");
-
-  if (image && image !== currentCharacterCarlos) {
-    currentCharacterCarlos = image;
-    char.style.opacity = 0;
-    setTimeout(() => {
-      char.style.backgroundImage = `url('${image}')`;
-      char.style.opacity = 1;
-      if (position === "left") {
-        char.style.left = "5%";
-        char.style.right = "auto";
-        char.style.transform = "none";
-      } else if (position === "right") {
-        char.style.left = "auto";
-        char.style.right = "5%";
-        char.style.transform = "none";
-      } else {
-        char.style.left = "50%";
-        char.style.right = "auto";
-        char.style.transform = "translateX(-50%)";
-      }
-    }, 500);
-  }
 }
 
 </script>
